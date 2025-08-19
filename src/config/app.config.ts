@@ -6,6 +6,8 @@ const enviromentVariables = z.object({
         .min(1)
         .default('postgresql://user:password@localhost:5432/dbname'),
     TYPE_DATABASE: z.string().default('postgresql'),
+    GEMINI_API_KEYI: z.string().default('GEMINI_API_KEYI'),
+    ENV_MODEL_AI: z.string().default('gemini'),
 });
 
 const { success, error, data } = enviromentVariables.safeParse(process.env);
@@ -15,4 +17,10 @@ if (!success) {
     throw new Error('Invalid environment variables');
 }
 
-export const { DATABASE_URL, PORT, TYPE_DATABASE } = data;
+export const {
+    DATABASE_URL,
+    PORT,
+    TYPE_DATABASE,
+    GEMINI_API_KEYI,
+    ENV_MODEL_AI,
+} = data;
