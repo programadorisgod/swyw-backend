@@ -1,33 +1,30 @@
-import { G4F } from 'g4f';
 import { BaseHandler } from './base-handler';
 import type { eventDto, createEventDto } from '../../dto/event';
 import { wrapperPromise } from '@src/share/utils/network/network';
-
-const g4f = new G4F();
-const messages = [
-    {
-        role: 'system',
-        content: `Se te pasará un texto, de ese texto vas a extraer el/los participantes o en base a todo el mensaje lo vas a generar.
-                  Siempre responderas como 'participante1, participante2, participante3', solo esoo, nada de explicaciones, ni tips, solo ese objeto'`,
-    },
-];
+import { DIContainer } from '@src/container/container';
+import { TOKENS } from '@src/container/tokens';
+import type { AIModel } from '@src/share/utils/ai/interfaces/ai-model.interface';
 
 export class ParticipantsHandler extends BaseHandler {
+    private readonly _ai: AIModel = DIContainer.getInstance().resolve<AIModel>(
+        TOKENS.aiModel
+    );
+
     override async handle(
         messageEvent: eventDto,
         eventData: createEventDto
     ): Promise<[createEventDto, eventDto]> {
-        console.log('ParticipantsHandler', eventData.participants);
-
         if (!eventData.participants) {
-            console.log('ParticipantsHandler');
-            messages.push({
-                role: 'user',
-                content: JSON.stringify(messageEvent),
-            });
             const [err, response] = await wrapperPromise(
-                Promise.resolve('Tu, yo, el veci')
+                this._ai.generate(`
+                Se te pasará un texto y debes extraer el/los participantes.
+                Responde ÚNICAMENTE con un string.
+                 No uses comillas simples, no uses markdown, no uses \`\`\`.
+                Ejemplo: "lucku, juan, maria"
+                Mensaje: ${messageEvent.message}
+              `)
             );
+
             if (err || !response) {
                 console.log(err);
                 return [eventData, messageEvent];

@@ -1,36 +1,27 @@
-import { G4F } from 'g4f';
 import { BaseHandler } from './base-handler';
 import type { eventDto, createEventDto } from '../../dto/event';
 import { wrapperPromise } from '@src/share/utils/network/network';
-
-const g4f = new G4F();
-const messages = [
-    {
-        role: 'system',
-        content: `Se te pasará un texto, de ese texto vas a extraer la descripción o en base a todo el mensaje lo vas a generar.
-                  Siempre responderas como {description: 'description generada o encontrda'}, solo el objeto, nada de explicaciones, ni tips, solo ese objeto'`,
-    },
-];
+import type { AIModel } from '@src/share/utils/ai/interfaces/ai-model.interface';
+import { DIContainer } from '@src/container/container';
+import { TOKENS } from '@src/container/tokens';
 
 export class DescriptionHandler extends BaseHandler {
+    private readonly _ai: AIModel = DIContainer.getInstance().resolve<AIModel>(
+        TOKENS.aiModel
+    );
+
     override async handle(
         messageEvent: eventDto,
         eventData: createEventDto
     ): Promise<[createEventDto, eventDto]> {
-        console.log('DescriptionHandler: Handling event', messageEvent);
         if (!eventData.description) {
-            console.log('DescriptionHandler: No description provided');
-            messages.push({
-                role: 'user',
-                content: JSON.stringify(messageEvent),
-            });
             const [err, response] = await wrapperPromise(
-                Promise.resolve(
-                    JSON.stringify({
-                        description:
-                            'Reunión con Pedro para acordar el horario',
-                    })
-                )
+                this._ai.generate(`
+              Responde ÚNICAMENTE un objeto JSON válido.
+              Formato: {"description":"<texto de la descripción>"}
+               No uses comillas simples, no uses markdown, no uses \`\`\`.
+              Mensaje: ${messageEvent.message}
+            `)
             );
 
             if (err || !response) {
@@ -40,6 +31,10 @@ export class DescriptionHandler extends BaseHandler {
 
             const responseObject = JSON.parse(response);
 
+            console.log(
+                'DescriptionHandler: Response from AI:',
+                responseObject
+            );
             const updatedEventData = {
                 ...eventData,
                 description: responseObject.description,
