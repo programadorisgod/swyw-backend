@@ -7,4 +7,6 @@ export const TOKENS = {
     eventService: Symbol('eventService'),
     eventController: Symbol('eventController'),
     eventRouter: Symbol('eventRouter'),
+    aiModelFactory: Symbol('aiModelFactory'),
+    aiModel: Symbol('aiModel'),
 };
