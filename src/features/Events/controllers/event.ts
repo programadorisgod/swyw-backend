@@ -14,7 +14,7 @@ export class EventController {
 
     createEvent = async (req: Request, res: Response) => {
         const { messageEvent } = req.body;
-
+        console.log('Received messageEvent:', messageEvent);
         try {
             const [err, event] = await wrapperPromise(
                 this._eventMediator.createEvent({
