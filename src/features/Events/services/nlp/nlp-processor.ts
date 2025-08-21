@@ -1,30 +1,34 @@
+import type { AIModel } from '@src/share/utils/ai/interfaces/ai-model.interface';
 import type { createEventDto, eventDto } from '../../dto/event';
-import { DescriptionHandler } from './description-handler';
-import type { INlpHandler } from './interfaces/nlp-handler';
-import { ParticipantsHandler } from './participants-handlers';
-import { TimeHandler } from './time-handler';
-import { TitleHandler } from './title-handler';
+import { DIContainer } from '@src/container/container';
+import { TOKENS } from '@src/container/tokens';
+import { wrapperPromise } from '@src/share/utils/network/network';
+import { unknown } from 'zod/v3';
+import { prompt } from './prompt';
 
 export class NlpProcessor {
-    private _chain: INlpHandler;
-    constructor() {
-        this._chain = new TitleHandler();
-        const timeHandler = new TimeHandler();
-        const descriptionHandler = new DescriptionHandler();
-        const participantsHandler = new ParticipantsHandler();
+    private readonly _ai: AIModel = DIContainer.getInstance().resolve<AIModel>(
+        TOKENS.aiModel
+    );
+    async process(messageEvent: eventDto): Promise<Error | createEventDto> {
+        const [err, response] = await wrapperPromise(
+            this._ai.generate(prompt({ messageEvent }))
+        );
 
-        this._chain.setNextHandler(timeHandler);
-        timeHandler.setNextHandler(descriptionHandler);
-        descriptionHandler.setNextHandler(participantsHandler);
-    }
+        if (err) {
+            console.log(err);
+            return err;
+        }
+        if (!response) {
+            return new Error('No response from AI model');
+        }
 
-    async process(messageEvent: eventDto): Promise<[createEventDto, eventDto]> {
-        const createEvent: createEventDto = {
-            title: '',
-            description: '',
-            date: new Date(),
-            participants: '',
-        };
-        return await this._chain.handle(messageEvent, createEvent);
+        try {
+            const createEventData: createEventDto = JSON.parse(response);
+            return createEventData;
+        } catch (err) {
+            console.error('Error parsing AI response:', err);
+            return new Error('Error parsing AI response');
+        }
     }
 }
