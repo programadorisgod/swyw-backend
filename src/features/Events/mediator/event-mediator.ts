@@ -13,13 +13,19 @@ export class EventMediator {
         // 4. Event notification (next)
         const nlp = container.resolve<NlpProcessor>(TOKENS.nlp);
 
-        const [eventNormalized] = await nlp.process(messageEvent);
+        const eventCreate = await nlp.process(messageEvent);
+        console.log(eventCreate);
+        if (eventCreate instanceof Error) {
+            console.log('error ');
+            throw eventCreate;
+            //TODO: Call to handle error method
+        }
 
         const eventService = container.resolve<EventService>(
             TOKENS.eventService
         );
 
-        const createdEvent = await eventService.create(eventNormalized);
+        const createdEvent = await eventService.create(eventCreate);
 
         return createdEvent;
     }
