@@ -23,6 +23,7 @@ export class EventController {
             );
 
             if (err) {
+                console.log('Error creating event:', err);
                 res.status(500).json({ error: err.message });
                 return;
             }
