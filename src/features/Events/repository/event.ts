@@ -12,7 +12,7 @@ export class EventRespository {
         return {
             title: eventData.title,
             description: eventData.description,
-            date: eventData.date,
+            date: eventData.date && new Date(eventData.date),
             participants: eventData.participants || '',
         };
     }
