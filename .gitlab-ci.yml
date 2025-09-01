@@ -6,7 +6,7 @@ build-job:
 test-job1:
     stage: test
     script:
-        - echo "Testing the project.. $GITLAB_USER_LOGIN!."
+        - echo "Testing the project..."
 
 test-job2:
     stage: test
