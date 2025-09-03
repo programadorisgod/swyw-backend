@@ -12,6 +12,8 @@ export const createEventRouter = () => {
         TOKENS.eventController
     );
     eventRouter.post(PREFIX, controller.createEvent);
+
     eventRouter.get(PREFIX, controller.getEvents);
+
     return eventRouter;
 };
