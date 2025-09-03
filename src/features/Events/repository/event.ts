@@ -14,6 +14,8 @@ export class EventRespository {
             description: eventData.description,
             date: eventData.date && new Date(eventData.date),
             participants: eventData.participants || '',
+            type: eventData.type,
+            remember: eventData.remember,
         };
     }
 
@@ -21,6 +23,7 @@ export class EventRespository {
         eventData: createEventDto
     ): Promise<eventResponseDto> => {
         const dbEntity = this.mapDtoToDbEntity(eventData);
+        console.log(dbEntity);
         const createdEvent = await this.dao.insert(dbEntity);
         return createdEvent;
     };
