@@ -1,4 +1,5 @@
 import express, { json, urlencoded } from 'express';
+import type { Request, Response } from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
@@ -16,5 +17,9 @@ app.use(morgan('dev'));
 
 //Routes
 app.use(createEventRouter());
+
+app.get('/health', (_req: Request, res: Response) => {
+    res.status(200).send('I am ok');
+});
 
 export { app };
