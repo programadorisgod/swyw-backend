@@ -4,6 +4,7 @@ import { EventMediator } from '../mediator/event-mediator';
 import { TOKENS } from '@src/container/tokens';
 import { wrapperPromise } from '@src/share/utils/network/network';
 import type { EventService } from '../services/event/event';
+import type { eventDto } from '../dto/event';
 
 export class EventController {
     private readonly _eventMediator =
@@ -13,12 +14,12 @@ export class EventController {
         DIContainer.getInstance().resolve<EventService>(TOKENS.eventService);
 
     createEvent = async (req: Request, res: Response) => {
-        const { messageEvent } = req.body;
-        console.log('Received messageEvent:', messageEvent);
+        const eventToCreate = req.body as unknown as eventDto;
+
         try {
             const [err, event] = await wrapperPromise(
                 this._eventMediator.createEvent({
-                    messageEvent,
+                    eventToCreate,
                 })
             );
 
