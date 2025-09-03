@@ -5,28 +5,38 @@ import type { NlpProcessor } from '../services/nlp/nlp-processor';
 import { EventService } from '../services/event/event';
 
 export class EventMediator {
-    async createEvent({ messageEvent }: { messageEvent: eventDto }) {
+    async createEvent({ eventToCreate }: { eventToCreate: eventDto }) {
         const container = DIContainer.getInstance();
-        // 1. NLP (in process)
+        // 1. NLP (finished)
         // 2. Event creation (finished)
         // 3. Event scheduling (next)
         // 4. Event notification (next)
-        const nlp = container.resolve<NlpProcessor>(TOKENS.nlp);
+        const nlpProcessor = container.resolve<NlpProcessor>(TOKENS.nlp);
 
-        const eventCreate = await nlp.process(messageEvent);
-        console.log(eventCreate);
-        if (eventCreate instanceof Error) {
+        const nlpOutput = await nlpProcessor.process(eventToCreate);
+
+        if (nlpOutput instanceof Error) {
             console.log('error ');
-            throw eventCreate;
+            throw nlpOutput;
             //TODO: Call to handle error method
         }
+
+        const eventPayload = {
+            ...nlpOutput,
+            type: eventToCreate.type,
+            remember: eventToCreate.remember,
+        };
 
         const eventService = container.resolve<EventService>(
             TOKENS.eventService
         );
 
-        const createdEvent = await eventService.create(eventCreate);
+        const savedEvent = await eventService.create(eventPayload);
 
-        return createdEvent;
+        // TODO: If the event has enable remember then call service to manage google calendar o service calendar,
+        // else only create event without appointment event in service calendar
+        if (!savedEvent.remember) return savedEvent;
+
+        return savedEvent; //for test
     }
 }
