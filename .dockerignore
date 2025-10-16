@@ -1,4 +1,8 @@
-node_modules
+node_modules/
 .prettierrc
 .eslintrc.json
 dist/
+.env
+drizzle/
+Dockerfile
+development.dockerfile
