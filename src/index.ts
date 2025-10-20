@@ -1,7 +1,7 @@
 import { app } from './app';
 import { PORT } from '@src/config/app.config';
 
-app.listen(PORT, () => {
+app.listen(Number(PORT), '0.0.0.0', () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
