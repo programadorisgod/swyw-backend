@@ -1,7 +1,7 @@
 import type { AIModel } from '../../interfaces/ai-model.interface';
-import { AI_URL, GITHUB_TOKEN } from '@src/config/app.config';
-
+import { env } from '@src/config/app.config';
 const model = 'openai/gpt-5-nano';
+const { AI_URL, GITHUB_TOKEN } = await env;
 
 export class OpenAIModel implements AIModel {
     async generate(prompt: string): Promise<string> {
