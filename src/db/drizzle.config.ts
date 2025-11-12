@@ -1,8 +1,8 @@
-import { env } from '@src/config/app.config';
+import { loadEnv } from '../config/app.config';
 import { defineConfig } from 'drizzle-kit';
 import type { typeDatabase } from './types/dialect';
 
-const { TYPE_DATABASE, DB_URL } = await env;
+const { TYPE_DATABASE, DB_URL } = loadEnv();
 
 export default defineConfig({
     out: './drizzle',

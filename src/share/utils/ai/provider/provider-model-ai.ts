@@ -1,9 +1,9 @@
 import type { AIModels } from '@src/share/types/ai';
 import type { AIModelFactory } from '../factory/ai-model-factory';
 import { GeminiModelFactory } from '../factory/gemini-model-factory';
-import { env } from '@src/config/app.config';
+import { loadEnv } from '@src/config/app.config';
 import { OpenAIModelFactory } from '../factory/openai-model-factory';
-const { ENV_MODEL_AI } = await env;
+const { ENV_MODEL_AI } = loadEnv();
 export class ProviderAIModel {
     public static _AIModels: Map<AIModels, AIModelFactory> = new Map<
         AIModels,

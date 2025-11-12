@@ -3,9 +3,9 @@ import { TOKENS } from '@src/container/tokens';
 import type { createEventDto, responseAllEventsDTO } from '../../dto/event';
 import { EventRespository } from '../../repository/event';
 import { wrapperPromise } from '@src/share/utils/network/network';
-import { env } from '@src/config/app.config';
+import { loadEnv } from '@src/config/app.config';
 import { NOT_FOUND_ERROR } from 'apicustomerrors';
-const { URL_USER_SERVICE } = await env;
+const { URL_USER_SERVICE } = loadEnv();
 const ITEM_NOT_FOUND = 404;
 export class EventService {
     private _repository = DIContainer.getInstance().resolve<EventRespository>(

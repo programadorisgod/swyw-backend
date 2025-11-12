@@ -22,8 +22,8 @@ const enviromentVariables = z.object({
     AI_URL: z.string().min(1).default('http://AI_URL:5000'),
 });
 
-export const loadEnv = async () => {
-    const secrets = await readSecrets();
+export const loadEnv = () => {
+    const secrets = readSecrets();
     const result = enviromentVariables.safeParse(secrets);
 
     if (!result.success) {

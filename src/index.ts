@@ -1,7 +1,7 @@
 import { app } from './app';
-import { env } from '@src/config/app.config';
+import { loadEnv } from '@src/config/app.config';
 
-const { PORT } = await env;
+const { PORT } = loadEnv();
 
 app.listen(Number(PORT), '0.0.0.0', () => {
     console.log(`Server is running on port ${PORT}`);

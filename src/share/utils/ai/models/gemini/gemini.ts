@@ -1,8 +1,8 @@
 import { GoogleGenAI } from '@google/genai';
 import type { AIModel } from '../../interfaces/ai-model.interface';
-import { env } from '@src/config/app.config';
+import { loadEnv } from '@src/config/app.config';
 
-const { GEMINI_API_KEYI } = await env;
+const { GEMINI_API_KEYI } = loadEnv();
 export class GeminiModel implements AIModel {
     private readonly _ai: GoogleGenAI;
     constructor() {
