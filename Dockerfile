@@ -1,7 +1,7 @@
-ARG NODE_VERSION=22-alpine3.19
+ARG NODE_VERSION=24-alpine3.21
 ARG DIR=/project
 ARG PORT=3002
-ARG ALPINE_VERSION=3.19
+ARG ALPINE_VERSION=3.21
 
 #################  stage 1 #################
 #                                          #
