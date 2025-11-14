@@ -1,7 +1,7 @@
-ARG NODE_VERSION=24-alpine3.19
+ARG NODE_VERSION=24-alpine3.21
 ARG DIR=/project
 ARG PORT=3002
-ARG ALPINE_VERSION=3.19
+ARG ALPINE_VERSION=3.21
 
 #################  stage 1 #################
 #                                          #
@@ -29,5 +29,6 @@ ARG DIR
 COPY . .
 
 RUN npm run build
+RUN apk add --no-cache wget curl
 
 RUN npm ci

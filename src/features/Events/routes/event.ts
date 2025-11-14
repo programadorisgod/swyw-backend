@@ -5,7 +5,7 @@ import { TOKENS } from '@src/container/tokens';
 
 const eventRouter = Router();
 
-const PREFIX = '/api/events';
+const PREFIX = '/api/notes';
 
 export const createEventRouter = () => {
     const controller = DIContainer.getInstance().resolve<EventController>(
